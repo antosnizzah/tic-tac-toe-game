@@ -2,10 +2,21 @@ document.addEventListener("DOMContentLoaded", () => {
     const cells = document.querySelectorAll(".cell");
     const messageElement = document.getElementById("message");
     const resetButton = document.getElementById("reset");
-    const currentPlayerElement = document.getElementById("currentPlayer");
+    const turnIndicator = document.getElementById("turnIndicator");
+    const overlay = document.getElementById("overlay");
+    const winnerMessage = document.getElementById("winnerMessage");
+    const quitButton = document.getElementById("quit");
+    const nextRoundButton = document.getElementById("nextRound");
+    const xWinsElement = document.getElementById("xWins");
+    const oWinsElement = document.getElementById("oWins");
+    const drawsElement = document.getElementById("draws");
+
     let currentPlayer = "X";
     let gameActive = true;
     let gameState = ["", "", "", "", "", "", "", "", ""];
+    let xWins = 0;
+    let oWins = 0;
+    let draws = 0;
 
     const winningConditions = [
         [0, 1, 2],
@@ -25,7 +36,38 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const handlePlayerChange = () => {
         currentPlayer = currentPlayer === "X" ? "O" : "X";
-        currentPlayerElement.innerText = `Current Player: ${currentPlayer}`;
+        turnIndicator.innerText = `${currentPlayer}'s Turn`;
+    };
+
+    const displayCrossLine = (winCondition) => {
+        const board = document.querySelector('.board');
+        const line = document.createElement('div');
+        line.classList.add('cross-line');
+
+        const [a, b, c] = winCondition;
+        const rowA = Math.floor(a / 3);
+        const rowC = Math.floor(c / 3);
+        const colA = a % 3;
+        const colC = c % 3;
+
+        if (rowA === rowC) {
+            line.style.width = '306px';
+            line.style.height = '6px';
+            line.style.transform = `translateY(${rowA * 100 + 50}px)`;
+        } else if (colA === colC) {
+            line.style.width = '6px';
+            line.style.height = '306px';
+            line.style.transform = `translateX(${colA * 100 + 50}px)`;
+        } else if (a === 0 && c === 8) {
+            line.classList.add('diagonal-1');
+            line.style.transform = 'rotate(45deg)';
+        } else if (a === 2 && c === 6) {
+            line.classList.add('diagonal-2');
+            line.style.transform = 'rotate(-45deg)';
+        }
+
+        board.appendChild(line);
+        setTimeout(() => line.classList.add('show'), 100);
     };
 
     const handleResultValidation = () => {
@@ -40,20 +82,32 @@ document.addEventListener("DOMContentLoaded", () => {
             }
             if (a === b && b === c) {
                 roundWon = true;
+                displayCrossLine(winCondition);
                 break;
             }
         }
 
         if (roundWon) {
-            messageElement.innerHTML = `Player ${currentPlayer} has won!`;
+            winnerMessage.innerText = `${currentPlayer} Takes the Round`;
+            overlay.classList.add("show");
             gameActive = false;
+            if (currentPlayer === 'X') {
+                xWins++;
+                xWinsElement.innerText = xWins;
+            } else {
+                oWins++;
+                oWinsElement.innerText = oWins;
+            }
             return;
         }
 
         let roundDraw = !gameState.includes("");
         if (roundDraw) {
-            messageElement.innerHTML = "Game ended in a draw!";
+            winnerMessage.innerText = "Game ended in a draw!";
+            overlay.classList.add("show");
             gameActive = false;
+            draws++;
+            drawsElement.innerText = draws;
             return;
         }
 
@@ -76,11 +130,14 @@ document.addEventListener("DOMContentLoaded", () => {
         currentPlayer = "X";
         gameActive = true;
         gameState = ["", "", "", "", "", "", "", "", ""];
-        messageElement.innerHTML = "";
-        currentPlayerElement.innerHTML = `Current Player: ${currentPlayer}`;
+        turnIndicator.innerText = `${currentPlayer}'s Turn`;
         cells.forEach(cell => cell.innerHTML = "");
+        overlay.classList.remove("show");
+        document.querySelectorAll('.cross-line').forEach(line => line.remove());
     };
 
     cells.forEach(cell => cell.addEventListener("click", handleCellClick));
     resetButton.addEventListener("click", handleRestartGame);
+    quitButton.addEventListener("click", () => location.reload());
+    nextRoundButton.addEventListener("click", handleRestartGame);
 });

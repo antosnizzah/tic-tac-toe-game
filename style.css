@@ -3,17 +3,33 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: #f0f0f0;
+    background-color: #255892;
     font-family: Arial, sans-serif;
     margin: 0;
 }
 
 .container {
     text-align: center;
+    color: #fff;
 }
 
-h1 {
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 20px;
+}
+
+.turn-indicator {
+    font-size: 1.5rem;
+}
+
+.reset-button {
+    font-size: 1.5rem;
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
 }
 
 .board {
@@ -22,38 +38,125 @@ h1 {
     grid-template-rows: repeat(3, 100px);
     gap: 5px;
     margin-bottom: 20px;
+    position: relative;
 }
 
 .cell {
     width: 100px;
     height: 100px;
-    background-color: #ffffff;
+    background-color: #db0b0b;
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: 2rem;
     cursor: pointer;
-    border: 2px solid #cccccc;
+    border-radius: 10px;
     transition: background-color 0.3s;
 }
 
 .cell:hover {
-    background-color: #e6e6e6;
+    background-color: #444;
 }
 
-button {
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.overlay-content {
+    background-color: #2a2a2a;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.winner-message {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+}
+
+.overlay-buttons {
+    display: flex;
+    justify-content: space-between;
+}
+
+.overlay-button {
     padding: 10px 20px;
     font-size: 1rem;
+    margin: 5px;
     cursor: pointer;
+    border: none;
+    border-radius: 5px;
 }
 
-.message {
+.overlay-button:nth-child(1) {
+    background-color: #ff5c5c;
+    color: #fff;
+}
+
+.overlay-button:nth-child(2) {
+    background-color: #ffd700;
+    color: #333;
+}
+
+.overlay.show {
+    visibility: visible;
+    opacity: 1;
+}
+
+.scoreboard {
     margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
     font-size: 1.2rem;
 }
 
-.current-player {
-    margin-top: 10px;
-    font-size: 1.2rem;
-    font-weight: bold;
+.cross-line {
+    position: absolute;
+    width: 6px;
+    height: 306px;
+    background-color: #ffd700;
+    transform: rotate(45deg);
+    top: 50%;
+    left: 50%;
+    transform-origin: 50% 50%;
+    visibility: hidden;
+}
+
+.horizontal {
+    width: 306px;
+    height: 6px;
+    background-color: #ffd700;
+}
+
+.vertical {
+    width: 6px;
+    height: 306px;
+    background-color: #ffd700;
+}
+
+.diagonal-1 {
+    width: 6px;
+    height: 306px;
+    background-color: #ffd700;
+    transform: rotate(45deg);
+    transform-origin: 0% 100%;
+}
+
+.diagonal-2 {
+    width: 6px;
+    height: 306px;
+    background-color: #ffd700;
+    transform: rotate(-45deg);
+    transform-origin: 100% 100%;
 }
